@@ -1,0 +1,10 @@
+
+dn: ou=users, dc=ldap-demo,dc=test
+ou: users
+description: All people in organization
+objectclass: organizationalunit
+
+dn: ou=groups, dc=ldap-demo,dc=test
+ou: groups
+description: All Groups in organisation
+objectclass: organizationalunit

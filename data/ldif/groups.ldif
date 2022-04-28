@@ -1,0 +1,101 @@
+dn: cn=Executive,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: Executive
+uniqueMember: cn=Executive,ou=groups,dc=ldap-demo,dc=test
+description: Executive
+
+dn: cn=DevOps,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: Operations
+uniqueMember: cn=DevOps,ou=groups,dc=ldap-demo,dc=test
+description: Operations
+
+dn: cn=Project Management,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: Project Management
+uniqueMember: cn=Project Management,ou=groups,dc=ldap-demo,dc=test
+description: Project Management
+
+dn: cn=Engineering,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: Engineering
+uniqueMember: cn=Engineering,ou=groups,dc=ldap-demo,dc=test
+description: Engineering
+
+dn: cn=Accounting,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: Accounting
+uniqueMember: cn=Accounting,ou=groups,dc=ldap-demo,dc=test
+description: Accounting
+
+dn: cn=Sales,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: Sales
+uniqueMember: cn=Sales,ou=groups,dc=ldap-demo,dc=test
+description: Sales
+
+dn: cn=Human Resources,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: Human Resources
+uniqueMember: cn=Human Resources,ou=groups,dc=ldap-demo,dc=test
+description: Human Resources
+
+dn: cn=Strategy Consulting,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: Strategy Consulting
+uniqueMember: cn=Strategy Consulting,ou=groups,dc=ldap-demo,dc=test
+description: Strategy Consulting
+
+dn: cn=Sales Engagement Management,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: Sales Engagement Management
+uniqueMember: cn=Sales Engagement Management,ou=groups,dc=ldap-demo,dc=test
+description: Sales Engagement Management
+
+dn: cn=Senior Management,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: Senior Management
+uniqueMember: cn=Senior Management,ou=groups,dc=ldap-demo,dc=test
+description: Senior Management
+
+dn: cn=Marketing,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: Marketing
+uniqueMember: cn=Marketing,ou=groups,dc=ldap-demo,dc=test
+description: Marketing
+
+dn: cn=Content Management Consulting,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: Content Management Consulting
+uniqueMember: cn=Content Management Consulting,ou=groups,dc=ldap-demo,dc=test
+description: Content Management Consulting
+
+dn: cn=Engineering,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: Engineering Operations
+uniqueMember: cn=Engineering,ou=groups,dc=ldap-demo,dc=test
+description: Engineering Operations
+
+dn: cn=CRM Strategy,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: CRM Strategy
+uniqueMember: cn=CRM Strategy,ou=groups,dc=ldap-demo,dc=test
+description: CRM Strategy
+
+dn: cn=Creative,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: Creative
+uniqueMember: cn=Creative,ou=groups,dc=ldap-demo,dc=test
+description: Creative
+
+dn: cn=1099 Contractor,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: 1099 Contractor
+uniqueMember: cn=1099 Contractor,ou=groups,dc=ldap-demo,dc=test
+description: 1099 Contractor
+
+dn: cn=CVP of IT,ou=groups,dc=ldap-demo,dc=test
+objectClass: groupOfUniqueNames
+cn: CVP of IT
+uniqueMember: cn=CVP of IT,ou=groups,dc=ldap-demo,dc=test
+description: CVP of IT

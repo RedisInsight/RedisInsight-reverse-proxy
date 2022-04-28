@@ -1,0 +1,6 @@
+
+add: olcDbIndex
+olcDbIndex: cn,uid eq
+olcDbIndex: displayName eq
+olcDbIndex: mail eq
+olcDbIndex: uniqueMember eq
