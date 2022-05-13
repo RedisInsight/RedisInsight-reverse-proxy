@@ -31,7 +31,9 @@ services:
     command:
       - bash
       - -c
-      - printf "$$BASIC_USERNAME:$$(openssl passwd -crypt $$BASIC_PASSWORD)\n" >> /etc/nginx/.htpasswd && /docker-entrypoint.sh nginx -g "daemon off;"
+      - |
+        printf "$$BASIC_USERNAME:$$(openssl passwd -crypt $$BASIC_PASSWORD)\n" >> /etc/nginx/.htpasswd
+        /docker-entrypoint.sh nginx -g "daemon off;"
     depends_on:
       - redisinsight
     networks:
