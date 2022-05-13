@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+  redis-stack:
+    image: redis/redis-stack-server
+    ports:
+      - 6379
+    networks:
+      - redis-network
+
+  redisinsight:
+    image: redislabs/redisinsight
+    networks:
+      - redis-network
+    depends_on:
+      - redis-stack
+
+  nginx-basicauth:
+    image: nginx
+    volumes:
+      - ./nginx-basic-auth.conf.template:/etc/nginx/templates/nginx-basic-auth.conf.template
+    ports:
+      - "9000:9000"
+    depends_on:
+      - redisinsight
+    networks:
+      - redis-network
+    environment:
+      - FORWARD_HOST=redisinsight
+      - FORWARD_PORT=8001
+      - NGINX_PORT=9000
+      - BASIC_USERNAME=redis
+      - BASIC_PASSWORD=password
+    command:
+      - bash
+      - -c
+      - printf "$$BASIC_USERNAME:$$(openssl passwd -crypt $$BASIC_PASSWORD)\n" >> /etc/nginx/.htpasswd && /docker-entrypoint.sh nginx -g "daemon off;"
+
+networks:
+  redis-network:
+    driver: bridge
