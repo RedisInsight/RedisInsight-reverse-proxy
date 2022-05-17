@@ -1,5 +1,5 @@
 server {
- listen 11000 default_server;
+ listen ${NGINX_PORT} default_server;
 
  location / {
      auth_basic             "redisinsight";

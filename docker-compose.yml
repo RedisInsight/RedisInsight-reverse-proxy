@@ -26,17 +26,6 @@ services:
     networks:
       - redis-network
 
-  nginx-basicauth:
-    build:
-      context: ./nginx-basicauth
-      dockerfile: Dockerfile
-    ports:
-      - "11000:11000"
-    depends_on:
-      - redis-insight
-    networks:
-      - redis-network
-
   ol:
     container_name: ol
     image: osixia/openldap:latest
