@@ -1,7 +1,6 @@
 version: "3.7"
 services:
   ol:
-    container_name: ol
     image: osixia/openldap:latest
     ports:
       - "389:389"
