@@ -9,8 +9,6 @@ services:
     image: redislabs/redisinsight
     environment:
       - RIPORT=${RIPORT:-8001}
-    ports:
-      - "${RIPORT:-8001}:${RIPORT:-8001}"
     depends_on:
       - redis-stack
     networks:

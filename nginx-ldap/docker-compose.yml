@@ -14,7 +14,7 @@ services:
       - redis-network
 
   ol-verify:
-    image: python:buster
+    image: python:slim-buster
     volumes:
       - ./verify_user.py:/verify_user.py
     profiles:
@@ -25,9 +25,8 @@ services:
       - bash
       - -c
       - |
-        apt update && apt install -y libsasl2-dev libldap2-dev libssl-dev
-        pip install prompt_toolkit
-        pip install python-ldap
+        apt -qq update && apt -qq install -y gcc libsasl2-dev libldap2-dev libssl-dev
+        pip --disable-pip-version-check install prompt_toolkit python-ldap --quiet
         python3 /verify_user.py
     depends_on:
       - ol
@@ -100,8 +99,6 @@ services:
     image: redislabs/redisinsight
     environment:
       - RIPORT=${RIPORT:-8001}
-    ports:
-      - "${RIPORT:-8001}:${RIPORT:-8001}"
     depends_on:
       - redis-stack
     networks:
