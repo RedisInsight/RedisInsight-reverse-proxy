@@ -20,12 +20,10 @@ Just being used as a reverse proxy for now. You can access RedisInsight at `http
 ## Nginx Basic Auth
 Nginx configured as a  reverse proxy with [basic auth](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/) , user will be prompted for a username and password.
 
-You can access RedisInsight at `http://localhost:11000` username and password is `redis` and `password` configured in [Dockerfile](nginx-basicauth/Dockerfile)
-
-Followed sample from [here](https://medium.com/pernod-ricard-tech/adding-basic-authentication-with-nginx-as-a-reverse-proxy-a229f9d12b73)
+You can access RedisInsight at `http://localhost:9000` username and password is `redis` and `password` configured in [docker-compose file](nginx-basicauth/docker-compose.yml)
 
 ## LDAP/AD
-`./ldap_seed.sh` to seed the open ldap server with users and groups
+`./ldap_seed.sh` to seed the open ldap server with users and groups. This is done automatically. In order to prevent this, comment `ol-seed` service in [docker-compose file](nginx-ldap/docker-compose.yml)
 
 ### Verify LDAP (Optional)
 
