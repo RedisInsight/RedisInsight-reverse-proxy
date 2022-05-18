@@ -51,17 +51,11 @@ services:
     volumes:
       - ./nginx-ldap.conf.template:/etc/nginx/templates/nginx-ldap.conf.template
     ports:
-      - 12000:12000
+      - "${NGINX_PORT:-12000}:${NGINX_PORT:-12000}"
     environment:
       - FORWARD_HOST=redisinsight
       - FORWARD_PORT=${RIPORT:-8001}
-      - BASIC_USERNAME=${BASIC_USERNAME:-redis}
-      - BASIC_PASSWORD=${BASIC_PASSWORD:-password}
-    command:
-      - bash
-      - -c
-      - |
-        /docker-entrypoint.sh nginx -g "daemon off;"
+      - NGINX_PORT=${NGINX_PORT:-12000}
     depends_on:
       - redisinsight
       - ol
