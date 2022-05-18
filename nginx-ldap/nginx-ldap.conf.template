@@ -1,5 +1,5 @@
 server {
- listen 12000 default_server;
+ listen ${NGINX_PORT} default_server;
 
  location / {
      auth_request /auth-proxy;

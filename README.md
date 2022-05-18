@@ -18,32 +18,28 @@ Just being used as a reverse proxy for now. You can access RedisInsight at `http
 > Envoy provides [external autorization](https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/http/ext_authz/v3/ext_authz.proto). Need to find a service that implements this protocol for ldap/AD.
 
 ## Nginx Basic Auth
+
+The ldap auth configuration is stored in `nginx-basicauth` folder.
+
 Nginx configured as a  reverse proxy with [basic auth](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/) , user will be prompted for a username and password.
 
-You can access RedisInsight at `http://localhost:11000` username and password is `redis` and `password` configured in [Dockerfile](nginx-basicauth/Dockerfile)
-
-Followed sample from [here](https://medium.com/pernod-ricard-tech/adding-basic-authentication-with-nginx-as-a-reverse-proxy-a229f9d12b73)
+You can access RedisInsight at `http://localhost:9000` username and password is `redis` and `password` configured in [docker-compose file](nginx-basicauth/docker-compose.yml)
 
 ## LDAP/AD
-`./ldap_seed.sh` to seed the open ldap server with users and groups
+
+The ldap auth configuration is stored in `nginx-ldap` folder.
+
+`./ldap_seed.sh` to seed the open ldap server with users and groups. This is done automatically. In order to prevent this, comment `ol-seed` service in [docker-compose file](nginx-ldap/docker-compose.yml)
 
 ### Verify LDAP (Optional)
 
 All the users have the same password: `ldap123`
 
-There is a python script which allows you to authenticate a user outside of RS which is a nice sanity check.
+There is a service which allows you to authenticate a user outside of RS wich is a nice sanity check.
 
-`virtualenv venv`
+`docker-compose --profile verify run ol-verify`
 
-`. venv/bin/activate`
-
-`pip install argparse`
-
-`pip install python-ldap`
-
-`python verify_user.py -u dianet -p ldap123`
-
-You can view the users in the data/ldif/users.ldif file.
+You can view the users in the nginx-ldap/data/ldif/users.ldif file.
 
 You can also verify ldap using ldap utils. These utils are in the openldap container and also are bundled with Mac OS.
 
