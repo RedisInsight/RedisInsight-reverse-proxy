@@ -12,11 +12,11 @@ Please notice the following points:
 ## Envoy
 Just being used as a reverse proxy for now. You can access RedisInsight at `http://localhost:10000`
 
-> Envoy provides [external autorization](https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/http/ext_authz/v3/ext_authz.proto). Need to find a service that implements this protocol for ldap/AD.
+> Envoy provides [external autorization](https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/http/ext_authz/v3/ext_authz.proto). Need to find a service that implements this protocol for LDAP/AD.
 
-## Nginx Basic Auth
+## NGINX Basic Auth
 
-The basic auth configuration is stored in `nginx-basicauth` folder. Nginx configured as a  reverse proxy with [basic auth](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/) , user will be prompted for a username and password.
+The basic auth configuration is stored in `nginx-basicauth` folder. NGINX configured as a  reverse proxy with [basic auth](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/) , user will be prompted for a username and password.
 
 ### Steps:
 ```
@@ -47,11 +47,11 @@ NGINX_PORT=10000 docker-compose up # runs reverse proxy at port 10000
 ```
 
 #### Note
-If you are facing "Operation not permitted" on Macos. Follow the steps mentioned here: https://stackoverflow.com/questions/58482352/operation-not-permitted-from-docker-container-logged-as-root
+If you are facing "Operation not permitted" on MacOs. Follow the steps mentioned here: https://stackoverflow.com/questions/58482352/operation-not-permitted-from-docker-container-logged-as-root
 
 ## NGINX LDAP/AD
 
-The nginx ldap auth configuration is stored in `nginx-ldap` folder.
+The NGINX LDAP auth configuration is stored in the `nginx-ldap` folder.
 
 ### Steps (from project root)
 
@@ -63,14 +63,14 @@ docker-compose up
 The compose file starts the folllowing containers:
 - ldap server
 - nginx-ldap authentication daemon
-- nginx reverse proxy with ldap support
+- nginx reverse proxy with LDAP support
 - redisinsight
 - redis-stack
 - ldap users seed
 
-You can access Redisinsight at `http://localhost:12000` and use `adamb` or `danj` with password `ldap123`
+You can access RedisInsight at `http://localhost:12000` and use `adamb` or `danj` with password `ldap123`
 
-More details for ldap setup can be found [here](https://github.com/nginxinc/nginx-ldap-auth). 
+More details for LDAP setup can be found [here](https://github.com/nginxinc/nginx-ldap-auth). 
 
 >IMPORTANT according to [bitnami/nginx-ldap-auth-daemon](https://hub.docker.com/r/bitnami/nginx-ldap-auth-daemon) the image and project is deperecated.
 
@@ -92,7 +92,7 @@ The users are added automatically by a seed container. In order to not perform t
 
 #### Verify LDAP users for sanity check (Optional)
 
-If you want to verify ldap users run `docker-compose --profile verify run ol-verify`.
+If you want to verify LDAP users run `docker-compose --profile verify run ol-verify`.
 
 This verification service runs a prompt where you can enter the username and password.
 
@@ -103,7 +103,7 @@ All the users have the same password: `ldap123`
 
 You can view the users in the nginx-ldap/data/ldif/users.ldif file.
 
-You can also verify ldap using ldap utils. These utils are in the openldap container and also are bundled with Mac OS.
+You can also verify LDAP using LDAP utils. These utils are in the openldap container and also are bundled with MacOS.
 
 Find user  adamb
 
@@ -122,4 +122,4 @@ You can also use [Apache LDAP Studio](https://directory.apache.org/studio/) to b
 `ldapsearch -x -H ldap://localhost:389  -w ldap123 -D "cn=admin,dc=ldap-demo,dc=test" -b dc=ldap-demo,dc=test "*"`
 
 #### Note
-If you are facing "Operation not permitted" on Macos. Follow the steps mentioned here: https://stackoverflow.com/questions/58482352/operation-not-permitted-from-docker-container-logged-as-root
+If you are facing "Operation not permitted" on MacOs. Follow the steps mentioned here: https://stackoverflow.com/questions/58482352/operation-not-permitted-from-docker-container-logged-as-root
