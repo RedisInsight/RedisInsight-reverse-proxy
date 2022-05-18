@@ -8,9 +8,6 @@ Please notice the following points:
 - there is no logout in this example
 - TLS/credentials are passed unencrypted
 
-## Setup
-Clone the repository and then run `docker-compose up`
-
 
 ## Envoy
 Just being used as a reverse proxy for now. You can access RedisInsight at `http://localhost:10000`
@@ -19,25 +16,90 @@ Just being used as a reverse proxy for now. You can access RedisInsight at `http
 
 ## Nginx Basic Auth
 
-The ldap auth configuration is stored in `nginx-basicauth` folder.
+The basic auth configuration is stored in `nginx-basicauth` folder. Nginx configured as a  reverse proxy with [basic auth](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/) , user will be prompted for a username and password.
 
-Nginx configured as a  reverse proxy with [basic auth](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/) , user will be prompted for a username and password.
+### Steps:
+```
+cd nginx-basicauth
+docker-compose up
+```
 
-You can access RedisInsight at `http://localhost:9000` username and password is `redis` and `password` configured in [docker-compose file](nginx-basicauth/docker-compose.yml)
+The compose file starts the following containers:
+- redisinsight
+- nginx reverse proxy
+- redis-stack
 
-## LDAP/AD
 
-The ldap auth configuration is stored in `nginx-ldap` folder.
+You can access RedisInsight at `http://localhost:9000` username and password is `redis` and `password`.
 
-`./ldap_seed.sh` to seed the open ldap server with users and groups. This is done automatically. In order to prevent this, comment `ol-seed` service in [docker-compose file](nginx-ldap/docker-compose.yml)
+The setup has the following environment variables.
 
-### Verify LDAP (Optional)
+| Name             | container           |
+|------------------|:-------------------:|
+| `RIPORT`         | Redisinsight port   |
+| `NGINX_PORT`     | Reverse proxy URL   |
+| `BASIC_USERNAME` | Proxy auth username |
+| `BASIC_PASSWORD` | Proxy auth password |
+
+#### Example
+```bash
+NGINX_PORT=10000 docker-compose up # runs reverse proxy at port 10000
+```
+
+#### Note
+If you are facing "Operation not permitted" on Macos. Follow the steps mentioned here: https://stackoverflow.com/questions/58482352/operation-not-permitted-from-docker-container-logged-as-root
+
+## NGINX LDAP/AD
+
+The nginx ldap auth configuration is stored in `nginx-ldap` folder.
+
+### Steps (from project root)
+
+```
+cd nginx-ldap
+docker-compose up
+```
+
+The compose file starts the folllowing containers:
+- ldap server
+- nginx-ldap authentication daemon
+- nginx reverse proxy with ldap support
+- redisinsight
+- redis-stack
+- ldap users seed
+
+You can access Redisinsight at `http://localhost:12000` and use `adamb` or `danj` with password `ldap123`
+
+More details for ldap setup can be found [here](https://github.com/nginxinc/nginx-ldap-auth). 
+
+>IMPORTANT according to [bitnami/nginx-ldap-auth-daemon](https://hub.docker.com/r/bitnami/nginx-ldap-auth-daemon) the image and project is deperecated.
+
+The setup has the following environment variables.
+
+| Name             | container           |
+|------------------|:-------------------:|
+| `RIPORT`         | Redisinsight port   |
+| `NGINX_PORT`     | Reverse proxy URL   |
+
+#### Example
+```bash
+NGINX_PORT=10000 docker-compose up # runs reverse proxy at port 10000
+```
+
+#### Don't seed users automatically (Optional)
+
+The users are added automatically by a seed container. In order to not perform this operation, you need to comment `ol-seed` service in [docker-compose file](nginx-ldap/docker-compose.yml).
+
+#### Verify LDAP users for sanity check (Optional)
+
+If you want to verify ldap users run `docker-compose --profile verify run ol-verify`.
+
+This verification service runs a prompt where you can enter the username and password.
+
+
+### Verify LDAP manually from host for sanity check (Optional)
 
 All the users have the same password: `ldap123`
-
-There is a service which allows you to authenticate a user outside of RS wich is a nice sanity check.
-
-`docker-compose --profile verify run ol-verify`
 
 You can view the users in the nginx-ldap/data/ldif/users.ldif file.
 
@@ -59,9 +121,5 @@ You can also use [Apache LDAP Studio](https://directory.apache.org/studio/) to b
 
 `ldapsearch -x -H ldap://localhost:389  -w ldap123 -D "cn=admin,dc=ldap-demo,dc=test" -b dc=ldap-demo,dc=test "*"`
 
-
-## Nginx LDAP
-Make sure you have seeded ldap. You can access `http://localhost:12000` and use `adamb` or `danj` with password `ldap123`
-More details for ldap setup can be found [here](https://github.com/nginxinc/nginx-ldap-auth). 
-
->IMPORTANT according to [bitnami/nginx-ldap-auth-daemon](https://hub.docker.com/r/bitnami/nginx-ldap-auth-daemon) the image and project is deperecated.
+#### Note
+If you are facing "Operation not permitted" on Macos. Follow the steps mentioned here: https://stackoverflow.com/questions/58482352/operation-not-permitted-from-docker-container-logged-as-root

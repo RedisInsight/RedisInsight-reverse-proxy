@@ -13,8 +13,8 @@ except ldap.LDAPError as e:
 	    print(value, key)
 
 while True:
-        username = prompt("Username: ")
-        password = prompt("Password: ", is_password=True)
+        username = prompt("LDAP Username: ")
+        password = prompt("LDAP Password: ", is_password=True)
         try:
 	        l.simple_bind_s(admin_dn,admin_pwd)
 	        query_user = l.search_s('dc=ldap-demo,dc=test',ldap.SCOPE_SUBTREE, 'uid={}'.format(username))
