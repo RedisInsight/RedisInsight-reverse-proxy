@@ -10,7 +10,21 @@ Please notice the following points:
 
 
 ## Envoy
-Just being used as a reverse proxy for now. You can access RedisInsight at `http://localhost:10000`
+
+### Steps
+
+```bash
+cd envoy
+docker-compose up
+```
+
+The compose file starts the following containers:
+- redisinsight
+- envoy
+- redis-stack
+
+
+Just being used as a reverse proxy for now. You can access RedisInsight at `http://localhost:10000`. Envoy admin portal can be viewed at `http://localhost:8005`.
 
 > Envoy provides [external autorization](https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/http/ext_authz/v3/ext_authz.proto). Need to find a service that implements this protocol for LDAP/AD.
 

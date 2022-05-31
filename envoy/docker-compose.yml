@@ -6,7 +6,7 @@ services:
     networks:
       - redis-network
 
-  redis-insight:
+  redisinsight:
     image: redislabs/redisinsight:latest
     networks:
       - redis-network
@@ -14,13 +14,14 @@ services:
       - redis-stack
 
   envoy:
-    build:
-      context: ./envoy
-      dockerfile: Dockerfile
+    image: bitnami/envoy
+    volumes:
+      - ./envoy.yaml:/opt/bitnami/envoy/conf/envoy.yaml
     ports:
+      - "8005:8005"
       - "10000:10000"
     depends_on:
-      - redis-insight
+      - redisinsight
     networks:
       - redis-network
 
