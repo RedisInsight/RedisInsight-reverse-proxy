@@ -1,6 +1,5 @@
 version: '3.7'
 services:
-
   redis-stack:
     image: redis/redis-stack-server:latest
     networks:
@@ -24,6 +23,24 @@ services:
       - redisinsight
     networks:
       - redis-network
+
+  redisinsight-redis-setup:
+    image: alpine
+    environment:
+      - RIPORT=${RIPORT:-8001}
+    command:
+      - sh
+      - -c
+      - |
+        apk add curl
+        echo "Adding redis-stack...."
+        sleep 10
+        curl -s -vvv -X "POST" "http://redisinsight:$$RIPORT/api/instance/"   -H "Content-Type: application/json; charset=utf-8" -d '{"host": "redis-stack","name": "redis-stack","connectionType": "STANDALONE","port": 6379}'
+    networks:
+      - redis-network
+    depends_on:
+      - redisinsight
+      - redis-stack
 
 networks:
   redis-network:
