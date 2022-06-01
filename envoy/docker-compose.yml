@@ -34,8 +34,8 @@ services:
       - |
         apk add curl
         echo "Adding redis-stack...."
-        sleep 10
-        curl -s -vvv -X "POST" "http://redisinsight:$$RIPORT/api/instance/"   -H "Content-Type: application/json; charset=utf-8" -d '{"host": "redis-stack","name": "redis-stack","connectionType": "STANDALONE","port": 6379}'
+        wget -qO- https://raw.githubusercontent.com/eficode/wait-for/v2.2.3/wait-for | sh -s -- redisinsight:$$RIPORT -- echo Redisinsight is up
+        curl -s -X "POST" "http://redisinsight:$$RIPORT/api/instance/"   -H "Content-Type: application/json; charset=utf-8" -d '{"host": "redis-stack","name": "redis-stack","connectionType": "STANDALONE","port": 6379}'
     networks:
       - redis-network
     depends_on:
