@@ -1,37 +1,24 @@
-version: "3.7"
+version: '3.7'
 services:
   redis-stack:
-    image: redis/redis-stack-server
+    image: redis/redis-stack-server:latest
     networks:
       - redis-network
 
   redisinsight:
-    image: redislabs/redisinsight
-    environment:
-      - RIPORT=${RIPORT:-8001}
-    depends_on:
-      - redis-stack
+    image: redislabs/redisinsight:latest
     networks:
       - redis-network
+    depends_on:
+      - redis-stack
 
-  nginx-basicauth:
-    image: nginx
+  envoy:
+    image: bitnami/envoy
     volumes:
-      - ./nginx-basic-auth.conf.template:/etc/nginx/templates/nginx-basic-auth.conf.template
+      - ./envoy.yaml:/opt/bitnami/envoy/conf/envoy.yaml
     ports:
-      - "${NGINX_PORT:-9000}:${NGINX_PORT:-9000}"
-    environment:
-      - FORWARD_HOST=redisinsight
-      - FORWARD_PORT=${RIPORT:-8001}
-      - NGINX_PORT=${NGINX_PORT:-9000}
-      - BASIC_USERNAME=${BASIC_USERNAME:-redis}
-      - BASIC_PASSWORD=${BASIC_PASSWORD:-password}
-    command:
-      - bash
-      - -c
-      - |
-        printf "$$BASIC_USERNAME:$$(openssl passwd -crypt $$BASIC_PASSWORD)\n" >> /etc/nginx/.htpasswd
-        /docker-entrypoint.sh nginx -g "daemon off;"
+      - "8005:8005"
+      - "10000:10000"
     depends_on:
       - redisinsight
     networks:

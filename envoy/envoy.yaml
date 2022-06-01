@@ -21,7 +21,7 @@ static_resources:
               - match:
                   prefix: "/"
                 route:
-                  cluster: redis-insight
+                  cluster: redisinsight
           http_filters:
           - name: envoy.filters.http.router
             typed_config:
@@ -31,17 +31,17 @@ static_resources:
 
 
   clusters:
-  - name: redis-insight
+  - name: redisinsight
     type: STRICT_DNS
     lb_policy: ROUND_ROBIN
     load_assignment:
-      cluster_name: redis-insight
+      cluster_name: redisinsight
       endpoints:
       - lb_endpoints:
         - endpoint:
             address:
               socket_address:
-                address: redis-insight
+                address: redisinsight
                 port_value: 8001
 admin:
   address:
