@@ -21,6 +21,8 @@ services:
       - verify
     stdin_open: true
     tty: true
+    environment:
+      - PYTHONUNBUFFERED=1
     command:
       - bash
       - -c
