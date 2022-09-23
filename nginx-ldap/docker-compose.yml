@@ -101,6 +101,7 @@ services:
     image: redislabs/redisinsight
     environment:
       - RIPORT=${RIPORT:-8001}
+      - RITRUSTEDORIGINS=http://localhost:12000
     depends_on:
       - redis-stack
     networks:

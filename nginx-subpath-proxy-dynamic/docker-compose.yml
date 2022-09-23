@@ -1,0 +1,88 @@
+version: "3.7"
+services:
+  redis-stack:
+    image: redis/redis-stack-server
+    networks:
+      - redis-network
+
+  redisinsight:
+    image: redislabs/redisinsight
+    environment:
+      - RIPORT=${RIPORT:-8001}
+      - RITRUSTEDORIGINS=http://localhost:9000,http://localhost:9001
+      - RIPROXYENABLE=t
+    ports:
+      - "8001:8001"
+    depends_on:
+      - redis-stack
+    networks:
+      - redis-network
+
+  nginx-subpath-proxy-dynamic-1:
+    image: nginx
+    volumes:
+      - ./nginx-subpath-proxy-dynamic.conf.template:/etc/nginx/templates/nginx-subpath-proxy-dynamic.conf.template
+    ports:
+      - "${NGINX_PORT_1:-9000}:${NGINX_PORT_1:-9000}"
+    environment:
+      - FORWARD_HOST=redisinsight
+      - FORWARD_PORT=${RIPORT:-8001}
+      - NGINX_PORT=${NGINX_PORT_1:-9000}
+      - NGINX_PROXY_PATH=${NGINX_PROXY_PATH_1:-/tools/redisinsight/}
+      - NGINX_PROXY_PATH_ADDITIONAL=${NGINX_PROXY_PATH_4:-/installed-tools/more/content/here/redisinsight/}
+    command:
+      - bash
+      - -c
+      - |
+        printf "Visit <a href=\"$$NGINX_PROXY_PATH\">$$NGINX_PROXY_PATH</a> or <a href=\"$$NGINX_PROXY_PATH_ADDITIONAL\">$$NGINX_PROXY_PATH_ADDITIONAL</a> for redisinsight" > /etc/nginx/index.html
+        /docker-entrypoint.sh nginx -g "daemon off;"
+    depends_on:
+      - redisinsight
+    networks:
+      - redis-network
+
+  nginx-subpath-proxy-dynamic-2:
+    image: nginx
+    volumes:
+      - ./nginx-subpath-proxy-dynamic.conf.template:/etc/nginx/templates/nginx-subpath-proxy-dynamic.conf.template
+    ports:
+      - "${NGINX_PORT_2:-9001}:${NGINX_PORT_2:-9001}"
+    environment:
+      - FORWARD_HOST=redisinsight
+      - FORWARD_PORT=${RIPORT:-8001}
+      - NGINX_PORT=${NGINX_PORT_2:-9001}
+      - NGINX_PROXY_PATH=${NGINX_PROXY_PATH_2:-/applications/redisinsight/}
+      - NGINX_PROXY_PATH_ADDITIONAL=${NGINX_PROXY_PATH_3:-/helpers/tools/redisinsight/}
+    command:
+      - bash
+      - -c
+      - |
+        printf "Visit <a href=\"$$NGINX_PROXY_PATH\">$$NGINX_PROXY_PATH</a> or <a href=\"$$NGINX_PROXY_PATH_ADDITIONAL\">$$NGINX_PROXY_PATH_ADDITIONAL</a> for redisinsight" > /etc/nginx/index.html
+        /docker-entrypoint.sh nginx -g "daemon off;"
+    depends_on:
+      - redisinsight
+    networks:
+      - redis-network
+
+
+  redisinsight-redis-setup:
+    image: alpine
+    environment:
+      - RIPORT=${RIPORT:-8001}
+    command:
+      - sh
+      - -c
+      - |
+        apk add curl
+        echo "Adding redis-stack...."
+        wget -qO- https://raw.githubusercontent.com/eficode/wait-for/v2.2.3/wait-for | sh -s -- redisinsight:$$RIPORT -- echo Redisinsight is up
+        curl -s -X "POST" "http://redisinsight:$$RIPORT/api/instance/"   -H "Content-Type: application/json; charset=utf-8" -d '{"host": "redis-stack","name": "redis-stack","connectionType": "STANDALONE","port": 6379}'
+    networks:
+      - redis-network
+    depends_on:
+      - redisinsight
+      - redis-stack
+
+networks:
+  redis-network:
+    driver: bridge

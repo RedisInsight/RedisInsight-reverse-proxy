@@ -1,0 +1,12 @@
+server {
+ listen ${NGINX_PORT} default_server;
+
+ root /etc/nginx;
+ index index.html;
+
+ location ${NGINX_PROXY_PATH} {
+     proxy_pass             http://${FORWARD_HOST}:${FORWARD_PORT}/;
+     proxy_read_timeout     900;
+     proxy_set_header       Host $host;
+ }
+}

@@ -10,28 +10,31 @@ services:
     environment:
       - RIPORT=${RIPORT:-8001}
       - RITRUSTEDORIGINS=http://localhost:9000
+      - RIPROXYENABLE=t
+      - RIPROXYPATH=${RIPROXYPATH:-/apps/redisinsight/}
+    ports:
+      - "8001:8001"
     depends_on:
       - redis-stack
     networks:
       - redis-network
 
-  nginx-basicauth:
+  nginx-subpath-proxy:
     image: nginx
     volumes:
-      - ./nginx-basic-auth.conf.template:/etc/nginx/templates/nginx-basic-auth.conf.template
+      - ./nginx-subpath-proxy.conf.template:/etc/nginx/templates/nginx-subpath-proxy.conf.template
     ports:
       - "${NGINX_PORT:-9000}:${NGINX_PORT:-9000}"
     environment:
       - FORWARD_HOST=redisinsight
       - FORWARD_PORT=${RIPORT:-8001}
       - NGINX_PORT=${NGINX_PORT:-9000}
-      - BASIC_USERNAME=${BASIC_USERNAME:-redis}
-      - BASIC_PASSWORD=${BASIC_PASSWORD:-password}
+      - NGINX_PROXY_PATH=${RIPROXYPATH:-/apps/redisinsight/}
     command:
       - bash
       - -c
       - |
-        printf "$$BASIC_USERNAME:$$(openssl passwd -crypt $$BASIC_PASSWORD)\n" >> /etc/nginx/.htpasswd
+        printf "Visit <a href=\"$$NGINX_PROXY_PATH\">$$NGINX_PROXY_PATH</a> for redisinsight" > /etc/nginx/index.html
         /docker-entrypoint.sh nginx -g "daemon off;"
     depends_on:
       - redisinsight
