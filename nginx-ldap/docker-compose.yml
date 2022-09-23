@@ -98,7 +98,7 @@ services:
   #    - "./data/ldif/ad.ldif:/ldap/users.ldif"
 
   redisinsight:
-    image: redislabs/redisinsight-dev:master
+    image: redislabs/redisinsight
     environment:
       - RIPORT=${RIPORT:-8001}
       - RITRUSTEDORIGINS=http://localhost:12000

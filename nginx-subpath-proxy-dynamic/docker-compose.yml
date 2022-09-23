@@ -6,7 +6,7 @@ services:
       - redis-network
 
   redisinsight:
-    image: redislabs/redisinsight-dev:master
+    image: redislabs/redisinsight
     environment:
       - RIPORT=${RIPORT:-8001}
       - RITRUSTEDORIGINS=http://localhost:9000,http://localhost:9001
