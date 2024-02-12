@@ -6,7 +6,7 @@ services:
       - redis-network
 
   redisinsight:
-    image: redislabs/redisinsight:latest
+    image: redis/redisinsight
     networks:
       - redis-network
     depends_on:
@@ -27,7 +27,7 @@ services:
   redisinsight-redis-setup:
     image: alpine
     environment:
-      - RIPORT=${RIPORT:-8001}
+      - RIPORT=${RIPORT:-5540}
     command:
       - sh
       - -c
