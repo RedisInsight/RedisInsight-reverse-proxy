@@ -50,7 +50,7 @@ services:
       - bash
       - -c
       - |
-        printf "Visit <a href=\"$$NGINX_PROXY_PATH\">$$NGINX_PROXY_PATH</a> for redisinsight" > /etc/nginx/index.html
+        printf "Visit <a href=\"$$NGINX_PROXY_PATH\">$$NGINX_PROXY_PATH</a> for RedisInsight v1 and <a href=\"/$$NGINX_V2_PROXY_PATH/\">$$NGINX_V2_PROXY_PATH</a> for RedisInsight v2" > /etc/nginx/index.html
         /docker-entrypoint.sh nginx -g "daemon off;"
     depends_on:
       - redisinsight
