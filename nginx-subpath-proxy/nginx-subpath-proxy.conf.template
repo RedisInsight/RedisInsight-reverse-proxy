@@ -9,4 +9,10 @@ server {
      proxy_read_timeout     900;
      proxy_set_header       Host $host;
  }
+
+ location /${NGINX_V2_PROXY_PATH}/ {
+     proxy_pass             http://${FORWARD_V2_HOST}:${FORWARD_V2_PORT}/${NGINX_V2_PROXY_PATH}/;
+     proxy_read_timeout     900;
+     proxy_set_header       Host $host;
+ }
 }

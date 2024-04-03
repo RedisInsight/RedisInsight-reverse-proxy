@@ -6,18 +6,31 @@ services:
       - redis-network
 
   redisinsight:
-    image: redislabs/redisinsight
+    image: redislabs/redisinsight:1.14.0
     environment:
       - RIPORT=${RIPORT:-8001}
       - RITRUSTEDORIGINS=http://localhost:9000
       - RIPROXYENABLE=t
-      - RIPROXYPATH=${RIPROXYPATH:-/apps/redisinsight/}
+      - RIPROXYPATH=${RIPROXYPATH:-/apps/v1/}
     ports:
       - "8001:8001"
     depends_on:
       - redis-stack
     networks:
       - redis-network
+
+  redisinsight-v2:
+    image: redislabs/redisinsight:testing-amd64-2024-04-03
+    pull_policy: if_not_present
+    environment:
+      - RI_PROXY_PATH=${RI_PROXY_PATH:-apps/v2}
+    ports:
+      - "5540:5540"
+    depends_on:
+      - redis-stack
+    networks:
+      - redis-network
+
 
   nginx-subpath-proxy:
     image: nginx
@@ -26,10 +39,13 @@ services:
     ports:
       - "${NGINX_PORT:-9000}:${NGINX_PORT:-9000}"
     environment:
+      - NGINX_PORT=${NGINX_PORT:-9000}
       - FORWARD_HOST=redisinsight
       - FORWARD_PORT=${RIPORT:-8001}
-      - NGINX_PORT=${NGINX_PORT:-9000}
-      - NGINX_PROXY_PATH=${RIPROXYPATH:-/apps/redisinsight/}
+      - NGINX_PROXY_PATH=${RIPROXYPATH:-/apps/v1/}
+      - FORWARD_V2_HOST=redisinsight-v2
+      - FORWARD_V2_PORT=${RIPORT:-5540}
+      - NGINX_V2_PROXY_PATH=${RI_PROXY_PATH:-apps/v2}
     command:
       - bash
       - -c
