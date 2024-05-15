@@ -59,7 +59,7 @@ services:
 
 
   nginx-ldap-auth:
-    image: bitnami/nginx-ldap-auth-daemon
+    image: bitnami/nginx-ldap-auth-daemon-archived
     ports:
       - 8888:8888
     depends_on:
@@ -75,7 +75,7 @@ services:
       - "${NGINX_PORT:-12000}:${NGINX_PORT:-12000}"
     environment:
       - FORWARD_HOST=redisinsight
-      - FORWARD_PORT=${RIPORT:-8001}
+      - FORWARD_PORT=${RIPORT:-5540}
       - NGINX_PORT=${NGINX_PORT:-12000}
     depends_on:
       - redisinsight
@@ -98,33 +98,32 @@ services:
   #    - "./data/ldif/ad.ldif:/ldap/users.ldif"
 
   redisinsight:
-    image: redislabs/redisinsight
+    image: redis/redisinsight
     environment:
-      - RIPORT=${RIPORT:-8001}
-      - RITRUSTEDORIGINS=http://localhost:12000
+      - RIPORT=${RIPORT:-5540}
     depends_on:
       - redis-stack
     networks:
       - redis-network
 
 
-  redisinsight-redis-setup:
-    image: alpine
-    environment:
-      - RIPORT=${RIPORT:-8001}
-    command:
-      - sh
-      - -c
-      - |
-        apk add curl
-        echo "Adding redis-stack...."
-        wget -qO- https://raw.githubusercontent.com/eficode/wait-for/v2.2.3/wait-for | sh -s -- redisinsight:$$RIPORT -- echo Redisinsight is up
-        curl -s -X "POST" "http://redisinsight:$$RIPORT/api/instance/"   -H "Content-Type: application/json; charset=utf-8" -d '{"host": "redis-stack","name": "redis-stack","connectionType": "STANDALONE","port": 6379}'
-    networks:
-      - redis-network
-    depends_on:
-      - redisinsight
-      - redis-stack
+  # redisinsight-redis-setup:
+  #   image: alpine
+  #   environment:
+  #     - RIPORT=${RIPORT:-8001}
+  #   command:
+  #     - sh
+  #     - -c
+  #     - |
+  #       apk add curl
+  #       echo "Adding redis-stack...."
+  #       wget -qO- https://raw.githubusercontent.com/eficode/wait-for/v2.2.3/wait-for | sh -s -- redisinsight:$$RIPORT -- echo Redisinsight is up
+  #       curl -s -X "POST" "http://redisinsight:$$RIPORT/api/instance/"   -H "Content-Type: application/json; charset=utf-8" -d '{"host": "redis-stack","name": "redis-stack","connectionType": "STANDALONE","port": 6379}'
+  #   networks:
+  #     - redis-network
+  #   depends_on:
+  #     - redisinsight
+  #     - redis-stack
 
 networks:
   redis-network:

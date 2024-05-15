@@ -42,7 +42,7 @@ static_resources:
             address:
               socket_address:
                 address: redisinsight
-                port_value: 8001
+                port_value: 5540
 admin:
   address:
     socket_address:
