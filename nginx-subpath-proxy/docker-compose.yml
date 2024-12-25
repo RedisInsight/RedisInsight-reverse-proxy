@@ -1,23 +1,43 @@
-version: "3.7"
+version: "3.8"
 services:
   redis-stack:
     image: redis/redis-stack-server
     networks:
       - redis-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
 
   redisinsight:
-    image: redislabs/redisinsight
+    image: redislabs/redisinsight:1.14.0
+    restart: unless-stopped
     environment:
       - RIPORT=${RIPORT:-8001}
       - RITRUSTEDORIGINS=http://localhost:9000
       - RIPROXYENABLE=t
-      - RIPROXYPATH=${RIPROXYPATH:-/apps/redisinsight/}
+      - RIPROXYPATH=${RIPROXYPATH:-/apps/v1/}
     ports:
       - "8001:8001"
+    depends_on:
+      redis-stack:
+        condition: service_healthy
+    networks:
+      - redis-network
+
+  redisinsight-v2:
+    image: redislabs/redisinsight:latest
+    pull_policy: if_not_present
+    environment:
+      - RI_PROXY_PATH=${RI_PROXY_PATH:-apps/v2}
+    ports:
+      - "5540:5540"
     depends_on:
       - redis-stack
     networks:
       - redis-network
+
 
   nginx-subpath-proxy:
     image: nginx
@@ -26,15 +46,18 @@ services:
     ports:
       - "${NGINX_PORT:-9000}:${NGINX_PORT:-9000}"
     environment:
+      - NGINX_PORT=${NGINX_PORT:-9000}
       - FORWARD_HOST=redisinsight
       - FORWARD_PORT=${RIPORT:-8001}
-      - NGINX_PORT=${NGINX_PORT:-9000}
-      - NGINX_PROXY_PATH=${RIPROXYPATH:-/apps/redisinsight/}
+      - NGINX_PROXY_PATH=${RIPROXYPATH:-/apps/v1/}
+      - FORWARD_V2_HOST=redisinsight-v2
+      - FORWARD_V2_PORT=${RIPORT:-5540}
+      - NGINX_V2_PROXY_PATH=${RI_PROXY_PATH:-apps/v2}
     command:
       - bash
       - -c
       - |
-        printf "Visit <a href=\"$$NGINX_PROXY_PATH\">$$NGINX_PROXY_PATH</a> for redisinsight" > /etc/nginx/index.html
+        printf "Visit <a href=\"$$NGINX_PROXY_PATH\">$$NGINX_PROXY_PATH</a> for RedisInsight v1 and <a href=\"/$$NGINX_V2_PROXY_PATH/\">$$NGINX_V2_PROXY_PATH</a> for RedisInsight v2" > /etc/nginx/index.html
         /docker-entrypoint.sh nginx -g "daemon off;"
     depends_on:
       - redisinsight
@@ -56,8 +79,8 @@ services:
     networks:
       - redis-network
     depends_on:
-      - redisinsight
-      - redis-stack
+      redis-stack:
+        condition: service_healthy
 
 networks:
   redis-network:
