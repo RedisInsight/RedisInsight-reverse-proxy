@@ -1,12 +1,18 @@
-version: "3.7"
+version: "3.8"
 services:
   redis-stack:
     image: redis/redis-stack-server
     networks:
       - redis-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
 
   redisinsight:
     image: redislabs/redisinsight:1.14.0
+    restart: unless-stopped
     environment:
       - RIPORT=${RIPORT:-8001}
       - RITRUSTEDORIGINS=http://localhost:9000
@@ -15,12 +21,13 @@ services:
     ports:
       - "8001:8001"
     depends_on:
-      - redis-stack
+      redis-stack:
+        condition: service_healthy
     networks:
       - redis-network
 
   redisinsight-v2:
-    image: redislabs/redisinsight:testing-amd64-2024-04-03
+    image: redislabs/redisinsight:latest
     pull_policy: if_not_present
     environment:
       - RI_PROXY_PATH=${RI_PROXY_PATH:-apps/v2}
@@ -72,8 +79,8 @@ services:
     networks:
       - redis-network
     depends_on:
-      - redisinsight
-      - redis-stack
+      redis-stack:
+        condition: service_healthy
 
 networks:
   redis-network:
